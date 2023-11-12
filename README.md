@@ -15,3 +15,11 @@ zkCryptoMixer, a tool designed to enhance privacy for cryptocurrency transaction
     6. Adding randomness to the zkey file : `npx snarkjs zkey contribute setup_0000.zkey setup_final.zkey`
     7. Verifying zkey file: `npx snarkjs zkey verify withdraw.r1cs ceremony_final.ptau setup_final.zkey`
     8. export solidity contract: `npx snarkjs zkey export solidityverifier setup_final.zkey Verifier.sol`
+
+
+Deposit:
+<img width="998" alt="image" src="https://github.com/srv-smn/crypto-mixer/assets/47235134/b29ca52a-1893-4fb0-9215-cdbe0b78575b">
+
+Withdraw:
+<img width="999" alt="image" src="https://github.com/srv-smn/crypto-mixer/assets/47235134/40abd0c2-8672-42e5-a58d-c4fc8594ee13">
+
