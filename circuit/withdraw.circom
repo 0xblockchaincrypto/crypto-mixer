@@ -6,19 +6,20 @@ include "./commitment_hasher.circom";
 template Withdraw() {
     signal input root;
     signal input nullifierHash;
+    signal input associationHash; // update
     signal input recipient;
-    signal input associationHash; 
-    signal input associationRecipient; 
+    signal input associationRecipient; // update
 
     signal input secret[256];
     signal input nullifier[256];
     signal input hashPairings[10];
     signal input hashDirections[10];
 
-    signal input associationHashPairings[10]; 
-    signal input associationHashDirections[10]; 
+    signal input associationHashPairings[10]; // update
+    signal input associationHashDirections[10]; // update
 
-   
+    // check if the public variable (submitted) nullifierHash is equal to the output 
+    // from hashing secret and nullifier
     component cHasher = CommitmentHasher();
     cHasher.secret <== secret;
     cHasher.nullifier <== nullifier;
@@ -51,7 +52,7 @@ template Withdraw() {
 
     root === currentHash[10];
 
-    
+    // association merkle tree
     component associationLeafHashers[10];
 
     signal associationCurrentHash[10 + 1];
@@ -83,4 +84,4 @@ template Withdraw() {
     recipientSquare <== recipient * recipient;
 }
 
-component main {public [root, nullifierHash,recipient, associationHash,associationRecipient]} = Withdraw();
+component main {public [root, nullifierHash, associationHash,associationRecipient,recipient]} = Withdraw();

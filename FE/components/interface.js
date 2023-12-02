@@ -10,8 +10,8 @@ const aspJSON = require("../json/Asp.json");
 const aspABI = aspJSON.abi;
 const aspInterface = new ethers.utils.Interface(aspABI)
 
-const tornadoAddress = "0x7E0E7E7af70d40fa577c668bd235C0A0441d5b63";
-const aspAddress = "0xaA9CDfdC1081f37BD9508aa9667ec5BCFD3d9550"
+const tornadoAddress = "0x19d0B5243476C4012A9dc93F0697f7ad8B079d39";
+const aspAddress = "0xcB8B44c4190C65C58bb602230Ab8f8490D621014"
 let tempData = null;
 
 

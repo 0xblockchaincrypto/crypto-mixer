@@ -21,7 +21,7 @@ async function main() {
  console.log('Verifier deployed at',verifier.address);
 
  const ASP = await ethers.getContractFactory("ASP");
- const asp = await ASP.deploy(verifier.address);
+ const asp = await ASP.deploy(hasher.address);
  await asp.deployed();
  console.log('ASP deployed at',asp.address);
 
