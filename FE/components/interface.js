@@ -8,23 +8,19 @@ const tornadoInterface = new ethers.utils.Interface(tornadoABI);
 
 const aspJSON = require("../json/Asp.json");
 const aspABI = aspJSON.abi;
-const aspInterface = new ethers.utils.Interface(aspABI)
+const aspInterface = new ethers.utils.Interface(aspABI);
 
-const tornadoAddress = "0xB6cF4Ea662397Fe2fFa694AFc4cbfd2b12c75eFC";
-const aspAddress = "0xc1fA8a99FBF674BCef1fbDe913E32bc1CedFC0f0"
+const tornadoAddress = "0x19d0B5243476C4012A9dc93F0697f7ad8B079d39";
+const aspAddress = "0xcB8B44c4190C65C58bb602230Ab8f8490D621014";
 let tempData = null;
 
-
-const Interface = () => {
-  const [account, updateAccount] = useState(null);
+const Interface = ({ account }) => {
   const [proofElements, updateProofElements] = useState(null);
   const [proofStringEl, updateProofStringEl] = useState(null);
   const [textArea, updateTextArea] = useState(null);
   const [aspData, updateAspData] = useState(null);
 
   // interface states
-
-
 
   const connectMetamask = async () => {
     try {
@@ -76,76 +72,89 @@ const Interface = () => {
 
   const withdraw = async () => {
     // updateWithdrawButtonState(ButtonState.Disabled);
-      await callASP()
+    await callASP();
 
-        if(!textArea || !textArea.value){ alert("Please input the proof of deposit string."); }
+    if (!textArea || !textArea.value) {
+      alert("Please input the proof of deposit string.");
+    }
 
-        try{
-            const proofString = textArea.value;
-            const proofElements = JSON.parse(atob(proofString));
-            // const b_aspData = JSON.parse(atob(aspData));
-            const b_aspData = aspData
-            console.log(proofElements);
+    try {
+      const proofString = textArea.value;
+      const proofElements = JSON.parse(atob(proofString));
+      // const b_aspData = JSON.parse(atob(aspData));
+      const b_aspData = aspData;
+      console.log(proofElements);
 
-    //         receipt = await window.ethereum.request({ method: "eth_getTransactionReceipt", params: [proofElements.txHash] });
-    //         if(!receipt){ throw "empty-receipt"; }
+      //         receipt = await window.ethereum.request({ method: "eth_getTransactionReceipt", params: [proofElements.txHash] });
+      //         if(!receipt){ throw "empty-receipt"; }
 
-    //         const log = receipt.logs[0];
-    //         const decodedData = tornadoInterface.decodeEventLog("Deposit", log.data, log.topics);
-              console.log(1);
-            const SnarkJS = window['snarkjs'];
-            console.log(2);
-            // console.log(aspData);
-            console.log(tempData);
-            const proofInput = {
-                "root": proofElements.root,//utils.BNToDecimal(decodedData.root),
-                "nullifierHash": proofElements.nullifierHash,
-                "recipient": utils.BNToDecimal(account.address),
-                "associationHash":tempData.root,
-                "associationRecipient":utils.BNToDecimal(account.address),
-                "secret": utils.BN256ToBin(proofElements.secret).split(""),
-                "nullifier": utils.BN256ToBin(proofElements.nullifier).split(""),
-                "hashPairings": proofElements.hashPairing,//decodedData.hashPairings.map((n) => ($u.BNToDecimal(n))),
-                "hashDirections": proofElements.hashDirections,//decodedData.pairDirection,
-                "associationHashPairings": tempData.hashPairing,//decodedData.hashPairings.map((n) => ($u.BNToDecimal(n))),
-                "associationHashDirections": tempData.hashDirections//decodedData.pairDirection
-            };
-            console.log(3);
-            const { proof, publicSignals } = await SnarkJS.groth16.fullProve(proofInput, "/withdraw.wasm", "/setup_final.zkey");
-            console.log(4);
-            console.log('=========================================');
-            console.log(proof);
-            console.log(publicSignals);
-            const callInputs = [
-                proof.pi_a.slice(0, 2).map(utils.BN256ToHex),
-                proof.pi_b.slice(0, 2).map((row) => (utils.reverseCoordinate(row.map(utils.BN256ToHex)))),
-                proof.pi_c.slice(0, 2).map(utils.BN256ToHex),
-                publicSignals.slice(0, 3).map(utils.BN256ToHex)
-            ];
+      //         const log = receipt.logs[0];
+      //         const decodedData = tornadoInterface.decodeEventLog("Deposit", log.data, log.topics);
+      console.log(1);
+      const SnarkJS = window["snarkjs"];
+      console.log(2);
+      // console.log(aspData);
+      console.log(tempData);
+      const proofInput = {
+        root: proofElements.root, //utils.BNToDecimal(decodedData.root),
+        nullifierHash: proofElements.nullifierHash,
+        recipient: utils.BNToDecimal(account.address),
+        associationHash: tempData.root,
+        associationRecipient: utils.BNToDecimal(account.address),
+        secret: utils.BN256ToBin(proofElements.secret).split(""),
+        nullifier: utils.BN256ToBin(proofElements.nullifier).split(""),
+        hashPairings: proofElements.hashPairing, //decodedData.hashPairings.map((n) => ($u.BNToDecimal(n))),
+        hashDirections: proofElements.hashDirections, //decodedData.pairDirection,
+        associationHashPairings: tempData.hashPairing, //decodedData.hashPairings.map((n) => ($u.BNToDecimal(n))),
+        associationHashDirections: tempData.hashDirections, //decodedData.pairDirection
+      };
+      console.log(3);
+      const { proof, publicSignals } = await SnarkJS.groth16.fullProve(
+        proofInput,
+        "/withdraw.wasm",
+        "/setup_final.zkey"
+      );
+      console.log(4);
+      console.log("=========================================");
+      console.log(proof);
+      console.log(publicSignals);
+      const callInputs = [
+        proof.pi_a.slice(0, 2).map(utils.BN256ToHex),
+        proof.pi_b
+          .slice(0, 2)
+          .map((row) => utils.reverseCoordinate(row.map(utils.BN256ToHex))),
+        proof.pi_c.slice(0, 2).map(utils.BN256ToHex),
+        publicSignals.slice(0, 3).map(utils.BN256ToHex),
+      ];
 
-            const callData = tornadoInterface.encodeFunctionData("withdraw", callInputs);
-            const tx = {
-                to: tornadoAddress,
-                from: account.address,
-                data: callData
-            };
-            const txHash = await window.ethereum.request({ method: "eth_sendTransaction", params: [tx] });
-            const receipt = await waitForTransactionReceipt(txHash);
+      const callData = tornadoInterface.encodeFunctionData(
+        "withdraw",
+        callInputs
+      );
+      const tx = {
+        to: tornadoAddress,
+        from: account.address,
+        data: callData,
+      };
+      const txHash = await window.ethereum.request({
+        method: "eth_sendTransaction",
+        params: [tx],
+      });
+      const receipt = await waitForTransactionReceipt(txHash);
 
+      //         var receipt;
+      //         while(!receipt){
+      //             receipt = await window.ethereum.request({ method: "eth_getTransactionReceipt", params: [txHash] });
+      //             await new Promise((resolve, reject) => { setTimeout(resolve, 1000); });
+      //         }
 
-    //         var receipt;
-    //         while(!receipt){
-    //             receipt = await window.ethereum.request({ method: "eth_getTransactionReceipt", params: [txHash] });
-    //             await new Promise((resolve, reject) => { setTimeout(resolve, 1000); });
-    //         }
-
-    //         if(!!receipt){ updateWithdrawalSuccessful(true); }
-        }catch(e){
-            console.log(e);
-        }
+      //         if(!!receipt){ updateWithdrawalSuccessful(true); }
+    } catch (e) {
+      console.log(e);
+    }
 
     //     updateWithdrawButtonState(ButtonState.Normal);
-  }
+  };
   const depositEther = async () => {
     const secret = ethers.BigNumber.from(
       ethers.utils.randomBytes(32)
@@ -212,7 +221,6 @@ const Interface = () => {
   };
 
   const callASP = async () => {
-
     const tx = {
       to: aspAddress,
       from: account.address,
@@ -242,70 +250,110 @@ const Interface = () => {
 
       // updateAspData(btoa(JSON.stringify(aspElements)));
       updateAspData(aspElements);
-      tempData = aspElements
+      tempData = aspElements;
 
-
-      console.log('===============!!!!!!!!===============');
-      console.log('aspElements',aspElements);
+      console.log("===============!!!!!!!!===============");
+      console.log("aspElements", aspElements);
       // console.log('btoa(JSON.stringify(aspElements))',btoa(JSON.stringify(aspElements)));
-      console.log('================!!!!!!!!!!!==============');
-
+      console.log("================!!!!!!!!!!!==============");
     } catch (error) {
       console.log(error);
     }
-
-  }
+  };
 
   const copyProof = () => {
-    if(!!proofStringEl){
-        // flashCopiedMessage();
-        navigator.clipboard.writeText(proofStringEl.innerHTML);
-    }  
-};
+    if (!!proofStringEl) {
+      // flashCopiedMessage();
+      navigator.clipboard.writeText(proofStringEl.innerHTML);
+    }
+  };
 
   return (
     <div>
-  {!!account ? (
-    <div>
-      <p style={{ marginBottom: "8px", fontSize: "18px", color: "#333" }}>ChainId: {account.chainId}</p>
-      <p style={{ marginBottom: "8px", fontSize: "18px", color: "#333" }}>Address: {account.address}</p>
-      <p style={{ marginBottom: "8px", fontSize: "18px", color: "#333" }}>Balance: {account.balance} ethers</p>
-    </div>
-  ) : (
-    <div>
-      <button
-        style={{
-          padding: "12px 24px",
-          fontSize: "16px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-        onClick={connectMetamask}
-      >
-        Connect Metamask
-      </button>
-    </div>
-  )}
-  <div style={{ margin: "16px 0" }}>
-    <hr />
-  </div>
-  {!!account ? (
-    <div>
-      {proofElements ? (
+      {!!account ? (
         <div>
-          <p style={{ fontWeight: "bold", fontSize: "18px", color: "#333", marginBottom: "8px" }}>
-            Proof of Deposit
+          <p style={{ marginBottom: "8px", fontSize: "18px", color: "#333" }}>
+            ChainId: {account.chainId}
           </p>
-          <div style={{ maxWidth: "100%", overflowWrap: "break-word", fontSize: "14px", color: "#555" }}>
-            <span ref={(proofStringEl) => { updateProofStringEl(proofStringEl); }}>{proofElements}</span>
-          </div>
-          {proofStringEl && (
+          <p style={{ marginBottom: "8px", fontSize: "18px", color: "#333" }}>
+            Address: {account.address}
+          </p>
+          <p style={{ marginBottom: "8px", fontSize: "18px", color: "#333" }}>
+            Balance: {account.balance} ethers
+          </p>
+        </div>
+      ) : (
+        <div>
+          <button
+            style={{
+              padding: "12px 24px",
+              fontSize: "16px",
+              backgroundColor: "#4CAF50",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+            onClick={connectMetamask}
+          >
+            Connect Metamask
+          </button>
+        </div>
+      )}
+      <div style={{ margin: "16px 0" }}>
+        <hr />
+      </div>
+      {!!account ? (
+        <div>
+          {proofElements ? (
+            <div>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                  color: "#333",
+                  marginBottom: "8px",
+                }}
+              >
+                Proof of Deposit
+              </p>
+              <div
+                style={{
+                  maxWidth: "100%",
+                  overflowWrap: "break-word",
+                  fontSize: "14px",
+                  color: "#555",
+                }}
+              >
+                <span
+                  ref={(proofStringEl) => {
+                    updateProofStringEl(proofStringEl);
+                  }}
+                >
+                  {proofElements}
+                </span>
+              </div>
+              {proofStringEl && (
+                <button
+                  style={{
+                    margin: "8px 0",
+                    padding: "12px 24px",
+                    fontSize: "16px",
+                    backgroundColor: "#4CAF50",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                  onClick={copyProof}
+                >
+                  Copy Proof
+                </button>
+              )}
+            </div>
+          ) : (
             <button
               style={{
-                margin: "8px 0",
                 padding: "12px 24px",
                 fontSize: "16px",
                 backgroundColor: "#4CAF50",
@@ -314,76 +362,62 @@ const Interface = () => {
                 borderRadius: "4px",
                 cursor: "pointer",
               }}
-              onClick={copyProof}
+              onClick={depositEther}
             >
-              Copy Proof
+              Deposit 0.1 Ether
             </button>
           )}
         </div>
       ) : (
-        <button
-          style={{
-            padding: "12px 24px",
-            fontSize: "16px",
-            backgroundColor: "#4CAF50",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-          onClick={depositEther}
-        >
-          Deposit 0.1 Ether
-        </button>
+        <p style={{ fontSize: "16px", color: "#555" }}>
+          You need to connect to Metamask to use this section
+        </p>
+      )}
+      <div style={{ margin: "16px 0" }}>
+        <hr />
+      </div>
+      {account ? (
+        <div>
+          <div>
+            <textarea
+              className="form-control"
+              style={{
+                width: "100%",
+                padding: "12px",
+                resize: "none",
+                boxSizing: "border-box",
+                fontSize: "16px",
+                color: "#333",
+              }}
+              ref={(ta) => {
+                updateTextArea(ta);
+              }}
+            ></textarea>{" "}
+          </div>
+          <button
+            style={{
+              margin: "8px 0",
+              padding: "12px 24px",
+              fontSize: "16px",
+              backgroundColor: "#4CAF50",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+            onClick={withdraw}
+          >
+            Withdraw 0.1 Ether
+          </button>
+        </div>
+      ) : (
+        <div>
+          <p style={{ fontSize: "16px", color: "#555" }}>
+            You need to connect to Metamask to use this section
+          </p>
+        </div>
       )}
     </div>
-  ) : (
-    <p style={{ fontSize: "16px", color: "#555" }}>You need to connect to Metamask to use this section</p>
-  )}
-  <div style={{ margin: "16px 0" }}>
-    <hr />
-  </div>
-  {account ? (
-    <div>
-      <div>
-        <textarea
-          className="form-control"
-          style={{
-            width: "100%",
-            padding: "12px",
-            resize: "none",
-            boxSizing: "border-box",
-            fontSize: "16px",
-            color: "#333",
-          }}
-          ref={(ta) => {
-            updateTextArea(ta);
-          }}
-        ></textarea>{" "}
-      </div>
-      <button
-        style={{
-          margin: "8px 0",
-          padding: "12px 24px",
-          fontSize: "16px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-        onClick={withdraw}
-      >
-        Withdraw 0.1 Ether
-      </button>
-    </div>
-  ) : (
-    <div>
-      <p style={{ fontSize: "16px", color: "#555" }}>You need to connect to Metamask to use this section</p>
-    </div>
-  )}
-</div>
-
   );
 };
 export default Interface;

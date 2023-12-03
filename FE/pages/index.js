@@ -1,13 +1,12 @@
-import Interface from "../components/interface";
+import Interface from "./Interface";
 import Script from "next/script";
 const Index = () => {
-return(
+  return (
     <div>
-        <h1> Crypto Mixer Practical Equilibrium</h1>
-        <Script src="/js/snarkjs.min.js" />
-        <Interface />
+      <Script src="/js/snarkjs.min.js" />
+      <Interface />
     </div>
-)
-}
+  );
+};
 
 export default Index;

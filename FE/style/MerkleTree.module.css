@@ -1,0 +1,54 @@
+/* MerkleTree.module.css */
+.container {
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.level {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.nodeWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 20px;
+}
+
+.node {
+  padding: 8px 12px;
+  border: 2px solid black;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 50px;
+  position: relative;
+  z-index: 1;
+}
+
+.lines {
+  position: absolute;
+  bottom: -20px;
+}
+
+/* Add styles for the SVG lines */
+.line {
+  stroke-width: 2;
+}
+
+/* Add media queries if necessary to handle responsiveness */
+@media (max-width: 600px) {
+  .level {
+    flex-direction: column;
+  }
+
+  .nodeWrapper {
+    margin: 20px 0;
+  }
+
+  .lines {
+    display: none; /* Hide lines on very small screens for clarity */
+  }
+}
