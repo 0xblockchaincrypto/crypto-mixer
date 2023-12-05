@@ -10,22 +10,14 @@ contract ASP {
     Hasher hasher;
 
     address public admin;
-    address public crypto_mixer;
 
     constructor(address _hasher) {
         hasher = Hasher(_hasher);
         admin = msg.sender;
     }
 
-    function updateMixer(address _crypto_mixer) public {
-        require(msg.sender == admin, "only admin");
-        crypto_mixer = _crypto_mixer;
-    }
-
-    function markedPaid(uint256 _root) public {
-        require(msg.sender == crypto_mixer,"only mixer");
-        require(roots[_root],"Paif or Non-Existant");
-        roots[_root] = false;
+    function doesRootExist(uint256 _root) public view returns(bool){
+        return roots[_root];
     }
 
     uint256[10] levelDefaults = [
@@ -47,8 +39,8 @@ contract ASP {
         uint8[10] pairDirection
     );
 
-    function addUser() external {
-        uint256 _commitment = uint256(uint160(msg.sender));
+    function addUser(uint256 _Commitment) external {
+        uint256 _commitment = _Commitment;
 
         require(nextLeafIdx < 2 ** treeLevel, "tree-full");
 

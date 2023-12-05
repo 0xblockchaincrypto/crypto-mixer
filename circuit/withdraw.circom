@@ -8,7 +8,7 @@ template Withdraw() {
     signal input nullifierHash;
     signal input associationHash; // update
     signal input recipient;
-    signal input associationRecipient; // update
+    // signal input associationRecipient; // update
 
     signal input secret[256];
     signal input nullifier[256];
@@ -56,7 +56,8 @@ template Withdraw() {
     component associationLeafHashers[10];
 
     signal associationCurrentHash[10 + 1];
-    associationCurrentHash[0] <== associationRecipient;
+    // associationCurrentHash[0] <== associationRecipient;
+    associationCurrentHash[0] <== cHasher.commitment;
 
     signal associationLeft[10];
     signal associationRight[10];
@@ -72,7 +73,8 @@ template Withdraw() {
         associationRight[i] <== d * associationCurrentHash[i];
         associationLeafHashers[i].ins[1] <== associationRight[i] + (1 - d) * associationHashPairings[i];
 
-        associationLeafHashers[i].k <== associationRecipient;
+        // associationLeafHashers[i].k <== associationRecipient;
+        associationLeafHashers[i].k <== cHasher.commitment;
         associationCurrentHash[i + 1] <== associationLeafHashers[i].o;
     }
 
@@ -84,4 +86,4 @@ template Withdraw() {
     recipientSquare <== recipient * recipient;
 }
 
-component main {public [root, nullifierHash, associationHash,associationRecipient,recipient]} = Withdraw();
+component main {public [root, nullifierHash, associationHash,recipient]} = Withdraw();

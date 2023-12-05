@@ -10,9 +10,10 @@ const aspJSON = require("../json/Asp.json");
 const aspABI = aspJSON.abi;
 const aspInterface = new ethers.utils.Interface(aspABI)
 
-const tornadoAddress = "0x19d0B5243476C4012A9dc93F0697f7ad8B079d39";
-const aspAddress = "0xcB8B44c4190C65C58bb602230Ab8f8490D621014"
+const tornadoAddress = "0x3C1d5e8B268e89864719fCf54eA48f4ECEf4dD8C";
+const aspAddress = "0x12e3Fe014bd293dBcced7d68c2406c9B9bf9512A"
 let tempData = null;
+
 
 
 const Interface = () => {
@@ -76,8 +77,6 @@ const Interface = () => {
 
   const withdraw = async () => {
     // updateWithdrawButtonState(ButtonState.Disabled);
-      await callASP()
-
         if(!textArea || !textArea.value){ alert("Please input the proof of deposit string."); }
 
         try{
@@ -86,6 +85,21 @@ const Interface = () => {
             // const b_aspData = JSON.parse(atob(aspData));
             const b_aspData = aspData
             console.log(proofElements);
+
+            const input = {
+              secret: utils.BN256ToBin(proofElements.secret).split(""),
+              nullifier: utils.BN256ToBin(proofElements.nullifier).split(""),
+            };
+        
+            var res = await fetch("/deposit.wasm");
+            var buffer = await res.arrayBuffer();
+            var depositWC = await wc(buffer);
+        
+            const r = await depositWC.calculateWitness(input);
+        
+            const commitment = r[1];
+            await callASP(commitment)
+
 
     //         receipt = await window.ethereum.request({ method: "eth_getTransactionReceipt", params: [proofElements.txHash] });
     //         if(!receipt){ throw "empty-receipt"; }
@@ -102,7 +116,7 @@ const Interface = () => {
                 "nullifierHash": proofElements.nullifierHash,
                 "recipient": utils.BNToDecimal(account.address),
                 "associationHash":tempData.root,
-                "associationRecipient":utils.BNToDecimal(account.address),
+                // "associationRecipient":utils.BNToDecimal(account.address),
                 "secret": utils.BN256ToBin(proofElements.secret).split(""),
                 "nullifier": utils.BN256ToBin(proofElements.nullifier).split(""),
                 "hashPairings": proofElements.hashPairing,//decodedData.hashPairings.map((n) => ($u.BNToDecimal(n))),
@@ -111,6 +125,7 @@ const Interface = () => {
                 "associationHashDirections": tempData.hashDirections//decodedData.pairDirection
             };
             console.log(3);
+            console.log(proofInput);
             const { proof, publicSignals } = await SnarkJS.groth16.fullProve(proofInput, "/withdraw.wasm", "/setup_final.zkey");
             console.log(4);
             console.log('=========================================');
@@ -168,6 +183,7 @@ const Interface = () => {
     const commitment = r[1];
     const nullifierHash = r[2];
     console.log("commitment", commitment);
+    
 
     const value = ethers.BigNumber.from("10000000000000000").toHexString();
     const tx = {
@@ -211,12 +227,13 @@ const Interface = () => {
     console.log(commitment, nullifierHash);
   };
 
-  const callASP = async () => {
+  const callASP = async (commitment) => {
+    console.log('comm',commitment);
 
     const tx = {
       to: aspAddress,
       from: account.address,
-      data: aspInterface.encodeFunctionData("addUser"),
+      data: aspInterface.encodeFunctionData("addUser",[commitment]),
     };
 
     try {

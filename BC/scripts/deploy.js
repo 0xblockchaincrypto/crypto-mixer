@@ -31,10 +31,6 @@ async function main() {
   const tornado = await Tornado.deploy(hasher.address, verifier.address, asp.address);
   await tornado.deployed();
   console.log('Tornado deployed at',tornado.address);
-
-  const tx = await asp.updateMixer(tornado.address);
-  await tx.wait();
-  console.log("Configuration done");
 }
 
 // We recommend this pattern to be able to use async/await everywhere

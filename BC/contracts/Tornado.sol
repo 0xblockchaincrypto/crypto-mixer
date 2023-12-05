@@ -5,11 +5,11 @@ import "./MiMCSponge.sol";
 import "./ReentrancyGuard.sol";
 
 interface IVerifier {
-    function verifyProof(uint[2] memory a, uint[2][2] memory b, uint[2] memory c, uint[5] memory input) external;
+    function verifyProof(uint[2] memory a, uint[2][2] memory b, uint[2] memory c, uint[4] memory input) external;
 }
 
 interface IASP {
-    function markedPaid(uint256 _root) external  ;
+    function doesRootExist(uint256 _root) external view returns(bool)  ;
 }
 
 contract Tornado is ReentrancyGuard {
@@ -117,7 +117,7 @@ contract Tornado is ReentrancyGuard {
 
         uint256 _addr = uint256(uint160(msg.sender));
 
-        (bool verifyOK, ) = verifier.call(abi.encodeCall(IVerifier.verifyProof, (a, b, c, [_root, _nullifierHash, associationHash, _addr, _addr])));
+        (bool verifyOK, ) = verifier.call(abi.encodeCall(IVerifier.verifyProof, (a, b, c, [_root, _nullifierHash, associationHash, _addr])));
 
         require(verifyOK, "invalid-proof");
 
@@ -127,7 +127,8 @@ contract Tornado is ReentrancyGuard {
         (bool ok, ) = target.call{ value: denomination }("");
 
         require(ok, "payment-failed");
-        asp.markedPaid(associationHash);
+        require(asp.doesRootExist(associationHash));
+
 
         emit Withdrawal(msg.sender, _nullifierHash);
     }
