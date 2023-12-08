@@ -55,12 +55,40 @@ export default function Interface() {
     }
   }, [account]); // Re-run this effect if 'account' or its 'chainId' changes
 
-  const handleTokenChange = (e) => {
+  const handleTokenChange = async (e) => {
     const selectedToken = e.target.value;
     setToken(selectedToken);
-    // Adjust the default amount based on the selected token
     setAmount(selectedToken === "ETH" ? "0.01" : "1000");
+
+    if (selectedToken === "USDC") {
+      await approveUSDC();
+    }
   };
+  const approveUSDC = async () => {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      const usdcContract = new ethers.Contract(
+        ERC20Contractaddress,
+        erc20ABI,
+        signer
+      );
+
+      const amountToApprove = ethers.utils.parseUnits("1000", 6); // 1000 USDC in smallest units
+
+      const tx = await usdcContract.approve(
+        contractAddresses.cryptoMixer,
+        amountToApprove
+      );
+      await tx.wait();
+
+      console.log("Approval transaction successful:", tx.hash);
+    } catch (error) {
+      console.error("Approval transaction failed:", error);
+    }
+  };
+
   async function waitForTransactionReceipt(txHash) {
     while (true) {
       const receipt = await window.ethereum.request({
@@ -99,18 +127,7 @@ export default function Interface() {
     const commitment = r[1];
     const nullifierHash = r[2];
     console.log("commitment", commitment);
-    // if (token === "USDC") {
-    //   const usdcContract = new ethers.Contract(
-    //     ERC20Contractaddress,
-    //     erc20ABI,
-    //     provider.getSigner()
-    //   );
-    //   const approveTx = await usdcContract.approve(
-    //     contractAddresses.cryptoMixer,
-    //     amount
-    //   );
-    //   await approveTx.wait();
-    // }
+
     const value = ethers.BigNumber.from("10000000000000000").toHexString();
     const tx = {
       to: contractAddresses.cryptoMixer,
