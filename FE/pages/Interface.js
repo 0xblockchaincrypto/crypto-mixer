@@ -5,15 +5,17 @@ import styles from "../style/Interface.module.css";
 import Layout from "../components/layout.js";
 import AccountContext from "../utils/accountContext";
 const wc = require("../circuit/witness_calculator.js");
-const tornadoJSON = require("../json/Tornado.json");
-const tornadoABI = tornadoJSON.abi;
-const tornadoInterface = new ethers.utils.Interface(tornadoABI);
+const cryptoMixerJSON = require("../json/CryptoMixer.json");
+const cryptoMixerABI = cryptoMixerJSON.abi;
+const cryptoMixerInterface = new ethers.utils.Interface(cryptoMixerABI);
 var axios = require("axios");
-
+const ERC20Contractaddress = "0x";
 const aspJSON = require("../json/Asp.json");
 const aspABI = aspJSON.abi;
 const aspInterface = new ethers.utils.Interface(aspABI);
-
+const erc20ABI = [
+  "function approve(address spender, uint256 amount) external returns (bool)",
+];
 let tempData = null;
 
 export default function Interface() {
@@ -75,7 +77,7 @@ export default function Interface() {
     }
   }
   const depositEther = async () => {
-    console.log("tornado", contractAddresses.tornado);
+    console.log("cryptoMixer", contractAddresses.cryptoMixer);
     const secret = ethers.BigNumber.from(
       ethers.utils.randomBytes(32)
     ).toString();
@@ -97,13 +99,24 @@ export default function Interface() {
     const commitment = r[1];
     const nullifierHash = r[2];
     console.log("commitment", commitment);
-
+    // if (token === "USDC") {
+    //   const usdcContract = new ethers.Contract(
+    //     ERC20Contractaddress,
+    //     erc20ABI,
+    //     provider.getSigner()
+    //   );
+    //   const approveTx = await usdcContract.approve(
+    //     contractAddresses.cryptoMixer,
+    //     amount
+    //   );
+    //   await approveTx.wait();
+    // }
     const value = ethers.BigNumber.from("10000000000000000").toHexString();
     const tx = {
-      to: contractAddresses.tornado,
+      to: contractAddresses.cryptoMixer,
       from: account.address,
       value: value,
-      data: tornadoInterface.encodeFunctionData("deposit", [commitment]),
+      data: cryptoMixerInterface.encodeFunctionData("deposit", [commitment]),
     };
 
     try {
@@ -115,7 +128,7 @@ export default function Interface() {
       console.log(receipt);
       const log = receipt.logs[1];
 
-      const decodedData = tornadoInterface.decodeEventLog(
+      const decodedData = cryptoMixerInterface.decodeEventLog(
         "Deposit",
         log.data,
         log.topics
@@ -182,7 +195,7 @@ export default function Interface() {
       //         if(!receipt){ throw "empty-receipt"; }
 
       //         const log = receipt.logs[0];
-      //         const decodedData = tornadoInterface.decodeEventLog("Deposit", log.data, log.topics);
+      //         const decodedData = cryptoMixerInterface.decodeEventLog("Deposit", log.data, log.topics);
       console.log(1);
       const SnarkJS = window["snarkjs"];
       console.log(2);
@@ -221,12 +234,12 @@ export default function Interface() {
         publicSignals.slice(0, 3).map(utils.BN256ToHex),
       ];
 
-      const callData = tornadoInterface.encodeFunctionData(
+      const callData = cryptoMixerInterface.encodeFunctionData(
         "withdraw",
         callInputs
       );
       const tx = {
-        to: contractAddresses.tornado,
+        to: contractAddresses.cryptoMixer,
         from: account.address,
         data: callData,
       };
