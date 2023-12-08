@@ -3,7 +3,6 @@ pragma solidity 0.8.17;
 
 import "./MiMCSponge.sol";
 import "./ReentrancyGuard.sol";
-import "./interface/IERC20.sol";
 
 interface IVerifier {
     function verifyProof(uint[2] memory a, uint[2][2] memory b, uint[2] memory c, uint[4] memory input) external;
@@ -13,11 +12,10 @@ interface IASP {
     function doesRootExist(uint256 _root) external view returns(bool)  ;
 }
 
-contract TornadoERC20 is ReentrancyGuard {
+contract CryptoMixer is ReentrancyGuard {
     address verifier;
     Hasher hasher;
     IASP asp;
-    IERC20 usdc;
 
 
     uint8 public treeLevel = 10;
@@ -48,16 +46,15 @@ contract TornadoERC20 is ReentrancyGuard {
     constructor(
         address _hasher,
         address _verifier,
-        address _asp,
-        address _usdc
+        address _asp
     ){
         hasher = Hasher(_hasher);
         verifier = _verifier;
         asp = IASP(_asp);
-        usdc = IERC20(_usdc);
     }
 
     function deposit(uint256 _commitment) external payable nonReentrant {
+        require(msg.value == denomination, "incorrect-amount");
         require(!commitments[_commitment], "existing-commitment");
         require(nextLeafIdx < 2 ** treeLevel, "tree-full");
 
@@ -101,7 +98,6 @@ contract TornadoERC20 is ReentrancyGuard {
         nextLeafIdx += 1;
 
         commitments[_commitment] = true;
-        usdc.transferFrom(msg.sender, address(this), denomination);
         emit Deposit(newRoot, hashPairings, hashDirections);
 
     }
@@ -126,7 +122,11 @@ contract TornadoERC20 is ReentrancyGuard {
         require(verifyOK, "invalid-proof");
 
         nullifierHashes[_nullifierHash] = true;
-        usdc.transfer(msg.sender, denomination);
+        address payable target = payable(msg.sender);
+
+        (bool ok, ) = target.call{ value: denomination }("");
+
+        require(ok, "payment-failed");
         require(asp.doesRootExist(associationHash));
 
 

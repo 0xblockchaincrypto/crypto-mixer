@@ -31,11 +31,11 @@ async function main() {
  console.log('USDC deployed at',usdc.address);
 
 
-  // deploy tornado
-  const Tornado = await ethers.getContractFactory("TornadoERC20");
-  const tornado = await Tornado.deploy(hasher.address, verifier.address, asp.address, usdc.address);
-  await tornado.deployed();
-  console.log('Tornado deployed at',tornado.address);
+  // deploy cryptoMixerERC20
+  const CryptoMixerERC20 = await ethers.getContractFactory("CryptoMixerERC20");
+  const cryptoMixerERC20 = await CryptoMixerERC20.deploy(hasher.address, verifier.address, asp.address, usdc.address);
+  await cryptoMixerERC20.deployed();
+  console.log('cryptoMixerERC20 deployed at',cryptoMixerERC20.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

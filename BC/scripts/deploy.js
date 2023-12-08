@@ -26,11 +26,11 @@ async function main() {
  console.log('ASP deployed at',asp.address);
 
 
-  // deploy tornado
-  const Tornado = await ethers.getContractFactory("Tornado");
-  const tornado = await Tornado.deploy(hasher.address, verifier.address, asp.address);
-  await tornado.deployed();
-  console.log('Tornado deployed at',tornado.address);
+  // deploy CryptoMixer
+  const CryptoMixer = await ethers.getContractFactory("CryptoMixer");
+  const cryptoMixer = await CryptoMixer.deploy(hasher.address, verifier.address, asp.address);
+  await cryptoMixer.deployed();
+  console.log('CryptoMixer deployed at',cryptoMixer.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
