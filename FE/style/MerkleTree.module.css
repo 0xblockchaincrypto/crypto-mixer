@@ -1,0 +1,186 @@
+/* MerkleTree.module.css
+.container {
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.level {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.nodeWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 20px;
+}
+
+.node {
+  padding: 8px 12px;
+  border: 2px solid black;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 50px;
+  position: relative;
+  z-index: 1;
+}
+
+.lines {
+  position: absolute;
+  bottom: -20px;
+}
+
+/* Add styles for the SVG lines */
+/* .line {
+  stroke-width: 2;
+}
+
+/* Add media queries if necessary to handle responsiveness */
+/* @media (max-width: 600px) {
+  .level {
+    flex-direction: column;
+  }
+
+  .nodeWrapper {
+    margin: 20px 0;
+  }
+
+  .lines {
+    display: none; /* Hide lines on very small screens for clarity */
+/* }
+} */
+/* adadnad */
+/* .treeContainer {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  min-height: 100vh;
+  padding-top: 20px;
+  background-color: #f4f4f9;
+  font-family: "Arial", sans-serif;
+}
+
+.tree {
+  padding: 20px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.layer {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.node {
+  margin: 0 15px;
+  padding: 10px 20px;
+  background-color: #e3f2fd;
+  border: 2px solid #90caf9;
+  border-radius: 8px;
+  font-size: 16px;
+  word-break: break-all;
+  text-align: center;
+  max-width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.layer0 {
+  /* Root layer */
+/* color: #0d47a1;
+  font-weight: bold;
+}
+
+.layer1 {
+  color: #1976d2;
+}
+.layer2 {
+  color: #2196f3;
+}
+.layer3 {
+  color: #64b5f6;
+}
+.layer4 {
+  /* Leaf layer */
+/* color: #bbdefb;
+  font-style: italic; */
+/* }  */
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(
+    4,
+    minmax(250px, 1fr)
+  ); /* Four trees per row with a minimum width of 250px */
+  gap: 40px; /* Increased gap for better spacing */
+  padding: 20px;
+  justify-items: center; /* Center each tree in its grid cell */
+  align-content: start; /* Align content to the start */
+  background-color: #f4f4f9;
+}
+
+.treeWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the tree and caption */
+}
+
+.tree {
+  padding: 20px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Scrollable Y-axis if content overflows */
+  margin-bottom: 10px; /* Space between the tree and its caption */
+}
+
+.treeCaption {
+  font-size: 14px;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 20px; /* Spacing after caption */
+}
+
+.layer {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.node {
+  margin: 0 10px;
+  padding: 5px 10px;
+  background-color: #e3f2fd;
+  border: 1px solid #90caf9;
+  border-radius: 8px;
+  font-size: 14px;
+  word-break: break-all;
+  text-align: center;
+  max-width: 80px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.layer0 {
+  color: #0d47a1;
+  font-weight: bold;
+}
+
+.layer1 {
+  color: #1976d2;
+}
+.layer2 {
+  color: #2196f3;
+}
+.layer3 {
+  color: #64b5f6;
+}
+.layer4 {
+  color: #bbdefb;
+  font-style: italic;
+}

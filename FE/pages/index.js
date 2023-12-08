@@ -1,13 +1,16 @@
-import Interface from "../components/interface";
+import Interface from "./Interface";
 import Script from "next/script";
+// import { ApolloProvider } from "@apollo/client";
+// import client from "../components/apolloClient";
 const Index = () => {
-return(
+  return (
     <div>
-        <h1> Crypto Mixer Practical Equilibrium</h1>
-        <Script src="/js/snarkjs.min.js" />
-        <Interface />
+      <Script src="/js/snarkjs.min.js" />
+      {/* <ApolloProvider client={client}> */}
+      <Interface />
+      {/* </ApolloProvider> */}
     </div>
-)
-}
+  );
+};
 
 export default Index;

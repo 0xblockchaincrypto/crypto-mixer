@@ -1,0 +1,119 @@
+.interface {
+  max-width: 600px;
+  margin: auto;
+  margin-top: 60px;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-bottom: 2px solid transparent;
+}
+
+.active,
+.tab:hover {
+  border-bottom: 2px solid blue;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.form label {
+  font-size: 14px;
+}
+
+.form input,
+.form select,
+.form button,
+.proof,
+.copyButton {
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.depositButton {
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+}
+
+.depositButton:hover {
+  background-color: #45a049;
+}
+
+/* Add to the .proof class to ensure it is centered if necessary */
+.proof {
+  width: 100%; /* It already takes the full width, so it should be centered */
+  height: 100px;
+  margin-bottom: 10px;
+  display: block; /* Ensure it's a block element */
+  /* margin-left: auto; */
+  /* margin-right: 45px; */
+}
+
+/* Wrap the proof and copyButton in a container div and use flexbox to center the copyButton */
+.proofContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* This will center the children */
+  gap: 10px; /* Adds space between textarea and button */
+}
+
+.copyButton {
+  padding: 10px 20px; /* Adjust the padding as needed */
+  background-color: #008cba;
+  color: white;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.copyButton:hover {
+  background-color: #005f73;
+}
+.actionButton {
+  background-color: #4caf50; /* Green background for action buttons */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.actionButton:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+/* Style adjustments for the withdraw tab */
+#asp {
+  display: block; /* Make the ASP dropdown a block element to fill the width */
+  margin-top: 10px; /* Space between the dropdown and the token field */
+}
+.buttonContainer {
+  display: flex;
+  justify-content: center; /* Center the button */
+  margin-top: 20px; /* Space above the button */
+}
